@@ -235,9 +235,9 @@ gcloud run deploy civiccompass-frontend --source .
 
 ---
 
-## Phase 1 Scope
+## Scope
 
-### ✅ Included in Phase 1
+### ✅ Current Scope
 - Deterministic rule-based logic for all decisions
 - Static mock data (mirrors Firestore schema)
 - Gemini used ONLY for explanation, summarization, and translation
@@ -246,7 +246,7 @@ gcloud run deploy civiccompass-frontend --source .
 - Myth vs Fact flip cards
 - Source badges on all data displays
 
-### Planned for Phase 2
+### Future Scope
 - Real-time ECI data integration
 - RAG (Retrieval-Augmented Generation)
 - Web scraping of official sources
