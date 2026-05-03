@@ -15,7 +15,7 @@
 - [API Endpoints](#api-endpoints)
 - [Testing](#testing)
 - [Deployment](#deployment)
-- [Phase 1 Scope](#phase-1-scope)
+- [Project Scope](#phase-1-scope)
 - [Documentation](#documentation)
 - [License](#license)
 
