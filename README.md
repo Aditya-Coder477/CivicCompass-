@@ -2,11 +2,6 @@
 
 > AI-assisted election guidance for Indian voters. Navigate your election journey from eligibility to results — step by step.
 
-![Phase](https://img.shields.io/badge/Phase-1%20(MVP)-blue)
-![Stack](https://img.shields.io/badge/Stack-Next.js%20%2B%20Express%20%2B%20Firestore-green)
-![AI](https://img.shields.io/badge/AI-Google%20Gemini%201.5%20Flash-orange)
-![Deploy](https://img.shields.io/badge/Deploy-Google%20Cloud%20Run-4285F4)
-
 ---
 
 ## 📋 Table of Contents
