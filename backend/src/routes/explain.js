@@ -1,6 +1,16 @@
+/**
+ * Route: POST /api/explain
+ *
+ * Accepts any text content and rephrases/translates it using Gemini.
+ * This is the direct Gemini explanation endpoint — used by the chat assistant.
+ * Gemini ONLY rephrases the provided content; it does not add information.
+ */
 const router = require('express').Router();
 const { body, validationResult } = require('express-validator');
 const { explain } = require('../services/geminiService');
+const { buildExplainPrompt } = require('../services/geminiPromptBuilder');
+const { sendSuccess, sendError } = require('../utils/responseHandler');
+const { DEFAULTS } = require('../utils/constants');
 
 router.post('/', [
   body('content').notEmpty().isString().isLength({ max: 2000 }),
@@ -8,11 +18,12 @@ router.post('/', [
   body('language').optional().isIn(['en', 'hi']),
 ], async (req, res, next) => {
   const errors = validationResult(req);
-  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+  if (!errors.isEmpty()) return sendError(res, errors.array()[0].msg, 400);
+
   try {
-    const { content, style = 'summary', language = 'en' } = req.body;
-    const explanation = await explain(content, style, language);
-    res.json({ explanation, style, language, sourceBadge: 'Simplified' });
+    const { content, style = DEFAULTS.STYLE, language = DEFAULTS.LANGUAGE } = req.body;
+    const explanation = await explain(buildExplainPrompt(content), style, language);
+    return sendSuccess(res, { explanation, style, language }, 'Simplified');
   } catch (err) { next(err); }
 });
 

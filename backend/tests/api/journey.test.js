@@ -78,4 +78,33 @@ describe('POST /api/journey', () => {
       .send({ age: 25, language: 'hi', style: 'eli5' })
       .expect(200);
   });
+
+  // ─── Edge cases ──────────────────────────────────────────────────────────────
+
+  test('empty body {} → 400 validation error (age required)', async () => {
+    const res = await request(app)
+      .post('/api/journey')
+      .send({})
+      .expect(400);
+
+    expect(res.body).toHaveProperty('error');
+  });
+
+  test('age = 120 (boundary maximum) → 200', async () => {
+    const res = await request(app)
+      .post('/api/journey')
+      .send({ age: 120 })
+      .expect(200);
+
+    expect(res.body.eligibility.eligible).toBe(true);
+  });
+
+  test('response always has success = true on 200', async () => {
+    const res = await request(app)
+      .post('/api/journey')
+      .send({ age: 30 })
+      .expect(200);
+
+    expect(res.body.success).toBe(true);
+  });
 });

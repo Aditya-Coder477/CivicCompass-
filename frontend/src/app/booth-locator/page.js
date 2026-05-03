@@ -5,8 +5,8 @@ import SourceBadge from '../../components/SourceBadge';
 import { api } from '../../lib/api';
 import { MapPin, Search, Loader2, Navigation, Clock } from 'lucide-react';
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
+import { STATES } from '../../lib/constants';
 
-const STATES = ['Delhi','Maharashtra','Gujarat','Karnataka','Rajasthan','Uttar Pradesh','Tamil Nadu','West Bengal','Punjab','Andhra Pradesh', 'Haryana'];
 
 export default function BoothLocatorPage() {
   const [district, setDistrict] = useState('');
