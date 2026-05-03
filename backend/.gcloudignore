@@ -1,0 +1,7 @@
+# Files to ignore when uploading source to Cloud Build
+# (overrides .gitignore for gcloud uploads)
+node_modules/
+.env
+.git/
+npm-debug.log
+.dockerignore
