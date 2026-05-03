@@ -9,6 +9,9 @@
 const USE_LOCAL = process.env.USE_LOCAL_DATA === 'true' || process.env.NODE_ENV === 'development';
 if (USE_LOCAL) console.log('[FirestoreService] Using local mock data (USE_LOCAL_DATA=true or development mode).');
 
+const cache = require('../utils/cache');
+
+
 let _local = null;
 function local() {
   if (!_local) _local = require('../data/localMockData');
@@ -29,42 +32,62 @@ function getDb() {
 }
 
 async function getDoc(collection, docId) {
+  const cacheKey = `doc_${collection}_${docId}`;
+  const cached = cache.get(cacheKey);
+  if (cached) return cached;
+
+  let result = null;
   if (USE_LOCAL) {
-    return local().getDoc(collection, docId);
+    result = local().getDoc(collection, docId);
+  } else {
+    const db = getDb();
+    if (!db) {
+      console.warn('[FirestoreService] Firestore unavailable, falling back to local data.');
+      result = local().getDoc(collection, docId);
+    } else {
+      try {
+        const ref = db.collection(collection).doc(docId);
+        const snap = await ref.get();
+        result = snap.exists ? { id: snap.id, ...snap.data() } : null;
+      } catch (err) {
+        console.warn(`[Firestore] falling back to local data: ${err.message}`);
+        result = local().getDoc(collection, docId);
+      }
+    }
   }
-  const db = getDb();
-  if (!db) {
-    console.warn('[FirestoreService] Firestore unavailable, falling back to local data.');
-    return local().getDoc(collection, docId);
-  }
-  try {
-    const ref = db.collection(collection).doc(docId);
-    const snap = await ref.get();
-    return snap.exists ? { id: snap.id, ...snap.data() } : null;
-  } catch (err) {
-    console.warn(`[Firestore] falling back to local data: ${err.message}`);
-    return local().getDoc(collection, docId);
-  }
+
+  cache.set(cacheKey, result);
+  return result;
 }
 
 async function getCollection(collection, filters = []) {
+  const cacheKey = `coll_${collection}_${JSON.stringify(filters)}`;
+  const cached = cache.get(cacheKey);
+  if (cached) return cached;
+
+  let result = [];
   if (USE_LOCAL) {
-    return local().getCollection(collection, filters);
+    result = local().getCollection(collection, filters);
+  } else {
+    const db = getDb();
+    if (!db) {
+      console.warn('[FirestoreService] Firestore unavailable, falling back to local data.');
+      result = local().getCollection(collection, filters);
+    } else {
+      try {
+        let ref = db.collection(collection);
+        filters.forEach(([f, op, val]) => { ref = ref.where(f, op, val); });
+        const snap = await ref.get();
+        result = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      } catch (err) {
+        console.warn(`[Firestore] falling back to local data: ${err.message}`);
+        result = local().getCollection(collection, filters);
+      }
+    }
   }
-  const db = getDb();
-  if (!db) {
-    console.warn('[FirestoreService] Firestore unavailable, falling back to local data.');
-    return local().getCollection(collection, filters);
-  }
-  try {
-    let ref = db.collection(collection);
-    filters.forEach(([f, op, val]) => { ref = ref.where(f, op, val); });
-    const snap = await ref.get();
-    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
-  } catch (err) {
-    console.warn(`[Firestore] falling back to local data: ${err.message}`);
-    return local().getCollection(collection, filters);
-  }
+
+  cache.set(cacheKey, result);
+  return result;
 }
 
 async function setDoc(collection, docId, data) {

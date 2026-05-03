@@ -91,7 +91,9 @@ const BOOTHS = [
   { boothId: 'WB001', name: 'Ward Office, Salt Lake', address: 'Sector V, Salt Lake, Kolkata - 700091', district: 'kolkata', state: 'westbengal', pincode: '700091', distance: '2.2 km', travelTime: '9 min auto', lat: 22.5726, lng: 88.4298 },
   { boothId: 'PB001', name: 'Govt School, Sector 22', address: 'Sector 22, Chandigarh - 160022', district: 'chandigarh', state: 'punjab', pincode: '160022', distance: '1.4 km', travelTime: '5 min walk', lat: 30.7333, lng: 76.7794 },
   { boothId: 'AP001', name: 'Municipal Office, Vijayawada', address: 'MG Road, Vijayawada - 520001', district: 'krishna', state: 'andhrapradesh', pincode: '520001', distance: '1.7 km', travelTime: '7 min auto', lat: 16.5062, lng: 80.6480 },
+  { boothId: 'HR001', name: 'Govt Model School, Gurgaon', address: 'Sector 14, Gurugram, Haryana - 122001', district: 'gurugram', state: 'haryana', pincode: '122001', distance: '2.0 km', travelTime: '8 min auto' },
 ];
+
 
 const VOTING_SIMULATION = {
   steps: [

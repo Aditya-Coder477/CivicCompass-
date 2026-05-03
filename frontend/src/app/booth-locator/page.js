@@ -4,8 +4,9 @@ import Header from '../../components/Header';
 import SourceBadge from '../../components/SourceBadge';
 import { api } from '../../lib/api';
 import { MapPin, Search, Loader2, Navigation, Clock } from 'lucide-react';
+import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 
-const STATES = ['Delhi','Maharashtra','Gujarat','Karnataka','Rajasthan','Uttar Pradesh','Tamil Nadu','West Bengal','Punjab','Andhra Pradesh'];
+const STATES = ['Delhi','Maharashtra','Gujarat','Karnataka','Rajasthan','Uttar Pradesh','Tamil Nadu','West Bengal','Punjab','Andhra Pradesh', 'Haryana'];
 
 export default function BoothLocatorPage() {
   const [district, setDistrict] = useState('');
@@ -14,6 +15,11 @@ export default function BoothLocatorPage() {
   const [booth, setBooth] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''
+  });
 
   useEffect(() => {
     const stored = localStorage.getItem('civicProfile');
@@ -104,18 +110,33 @@ export default function BoothLocatorPage() {
               </div>
             </div>
 
-            {/* Map placeholder */}
-            <div className="rounded-xl overflow-hidden h-40 flex items-center justify-center relative"
-              style={{ background: 'linear-gradient(135deg, #0F2040, #162A52)', border: '1px solid rgba(59,130,246,0.2)' }}>
-              <div className="text-center">
-                <div className="w-10 h-10 rounded-full mx-auto mb-2 flex items-center justify-center animate-bounce" style={{ background: 'rgba(249,115,22,0.2)', border: '2px solid #F97316' }}>
-                  <MapPin size={20} className="text-orange-400" />
+            {/* Google Map */}
+            <div className="rounded-xl overflow-hidden h-64 relative border border-blue-500/20">
+              {isLoaded && booth.coordinates ? (
+                <GoogleMap
+                  mapContainerStyle={{ width: '100%', height: '100%' }}
+                  center={booth.coordinates}
+                  zoom={15}
+                  options={{
+                    disableDefaultUI: true,
+                    zoomControl: true,
+                    styles: [
+                      { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+                      { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
+                      { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
+                      { featureType: "water", elementType: "geometry", stylers: [{ color: "#17263c" }] },
+                      { featureType: "road", elementType: "geometry", stylers: [{ color: "#38414e" }] },
+                    ]
+                  }}
+                >
+                  <Marker position={booth.coordinates} />
+                </GoogleMap>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-full bg-slate-800">
+                  <Loader2 className="animate-spin text-orange-400 mb-2" size={24} />
+                  <p className="text-slate-400 text-sm">Loading map...</p>
                 </div>
-                <p className="text-slate-400 text-xs">Map view — Phase 2 integration</p>
-                <p className="text-slate-600 text-xs">Lat: {booth.coordinates?.lat} · Lng: {booth.coordinates?.lng}</p>
-              </div>
-              {/* Decorative grid */}
-              <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
+              )}
             </div>
           </div>
         )}
