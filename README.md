@@ -251,7 +251,7 @@ gcloud run deploy civiccompass-frontend --source .
 - Myth vs Fact flip cards
 - Source badges on all data displays
 
-### ❌ NOT in Phase 1 (Planned for Phase 2)
+### Planned for Phase 2
 - Real-time ECI data integration
 - RAG (Retrieval-Augmented Generation)
 - Web scraping of official sources
@@ -276,6 +276,4 @@ This project is developed for educational and civic engagement purposes.
 
 ---
 
-<p align="center">
-  Built with ❤️ for Indian democracy
-</p>
+
