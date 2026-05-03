@@ -8,6 +8,8 @@
 #   _REGION           — e.g. asia-south1
 #   _GEMINI_API_KEY   — Google Gemini API key
 #   _BACKEND_URL      — will be set after first backend deploy
+#   _FRONTEND_MAPS_KEY — Google Maps Frontend API Key
+#   _BACKEND_MAPS_KEY  — Google Maps Backend Geocoding API Key
 # ─────────────────────────────────────────────────────────────────────
 
 options:
@@ -38,6 +40,8 @@ steps:
       - 'build'
       - '--build-arg'
       - 'NEXT_PUBLIC_BACKEND_URL=${_BACKEND_URL}'
+      - '--build-arg'
+      - 'NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${_FRONTEND_MAPS_KEY}'
       - '-t'
       - '${_REGION}-docker.pkg.dev/$PROJECT_ID/civiccompass/${_FRONTEND_SERVICE}:$COMMIT_SHA'
       - '-t'
@@ -90,7 +94,7 @@ steps:
       - '80'
       - '--allow-unauthenticated'
       - '--set-env-vars'
-      - 'NODE_ENV=production,GCP_PROJECT_ID=$PROJECT_ID,GEMINI_API_KEY=${_GEMINI_API_KEY},USE_LOCAL_DATA=true,FRONTEND_URL=https://${_FRONTEND_SERVICE}-$PROJECT_NUMBER.${_REGION}.run.app'
+      - 'NODE_ENV=production,GCP_PROJECT_ID=$PROJECT_ID,GEMINI_API_KEY=${_GEMINI_API_KEY},GOOGLE_MAPS_API_KEY=${_BACKEND_MAPS_KEY},USE_LOCAL_DATA=true,FRONTEND_URL=https://${_FRONTEND_SERVICE}-$PROJECT_NUMBER.${_REGION}.run.app'
 
   # ── Step 6: Deploy Frontend to Cloud Run ─────────────────────────
   - name: 'gcr.io/cloud-builders/gcloud'
